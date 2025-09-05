@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import VideoGrid from '@/components/blocks/VideoGrid';
+import Carousel from '@/components/blocks/Carousel';
+import VideoCard from '@/components/cards/VideoCard';
+import ChannelCard from '@/components/cards/ChannelCard';
+import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 
 export default function Index() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [favorites, setFavorites] = useState<string[]>([]);
 
   const categories = [
     { id: 'action', name: 'Экшн', color: 'bg-game-red', count: 127 },
@@ -21,235 +24,318 @@ export default function Index() {
     { id: 'shooter', name: 'Шутеры', color: 'bg-game-dark', count: 73 }
   ];
 
-  const popularVideos = [
-    { id: '1', title: 'Cyberpunk 2077: Night City Adventures', category: 'action', views: '2.4M', duration: '15:32', thumbnail: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg' },
-    { id: '2', title: 'Minecraft: Building Epic Castles', category: 'adventure', views: '1.8M', duration: '22:17', thumbnail: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg' },
-    { id: '3', title: 'FIFA 24: Ultimate Team Guide', category: 'sports', views: '1.2M', duration: '18:44', thumbnail: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg' },
-    { id: '4', title: 'Elden Ring: Boss Battle Compilation', category: 'action', views: '3.1M', duration: '28:15', thumbnail: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg' }
+  const mockVideos = [
+    { 
+      id: '1', 
+      slug: 'cyberpunk-2077-night-city',
+      title: 'Cyberpunk 2077: Night City Adventures', 
+      description: 'Исследуем темные улицы Найт-Сити в этом эпическом прохождении',
+      thumbnails: ['/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'],
+      duration_sec: 932, 
+      views_count: 2400000, 
+      publishedAt: '2024-01-15T10:00:00Z',
+      author: {
+        id: 'u1',
+        displayName: 'GamerPro',
+        handle: 'gamerpro',
+        avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'
+      },
+      categories: [{ name: 'Экшн', slug: 'action' }]
+    },
+    { 
+      id: '2', 
+      slug: 'minecraft-building-castles',
+      title: 'Minecraft: Building Epic Castles', 
+      description: 'Строим невероятные замки в майнкрафте шаг за шагом',
+      thumbnails: ['/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'],
+      duration_sec: 1337, 
+      views_count: 1800000, 
+      publishedAt: '2024-01-14T10:00:00Z',
+      author: {
+        id: 'u2',
+        displayName: 'BuildMaster',
+        handle: 'buildmaster',
+        avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'
+      },
+      categories: [{ name: 'Приключения', slug: 'adventure' }]
+    },
+    { 
+      id: '3', 
+      slug: 'fifa-24-ultimate-team',
+      title: 'FIFA 24: Ultimate Team Guide', 
+      description: 'Гайд по созданию лучшей команды в FIFA 24',
+      thumbnails: ['/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'],
+      duration_sec: 1124, 
+      views_count: 1200000, 
+      publishedAt: '2024-01-13T10:00:00Z',
+      author: {
+        id: 'u3',
+        displayName: 'SportGamer',
+        handle: 'sportgamer',
+        avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'
+      },
+      categories: [{ name: 'Спорт', slug: 'sports' }]
+    },
+    { 
+      id: '4', 
+      slug: 'elden-ring-boss-battles',
+      title: 'Elden Ring: Boss Battle Compilation', 
+      description: 'Эпичные битвы с боссами Elden Ring',
+      thumbnails: ['/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'],
+      duration_sec: 1695, 
+      views_count: 3100000, 
+      publishedAt: '2024-01-12T10:00:00Z',
+      author: {
+        id: 'u4',
+        displayName: 'BossFighter',
+        handle: 'bossfighter',
+        avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'
+      },
+      categories: [{ name: 'Экшн', slug: 'action' }]
+    },
+    { 
+      id: '5', 
+      slug: 'baldurs-gate-3-character',
+      title: 'Baldur\'s Gate 3: Character Creation', 
+      description: 'Создаем идеального персонажа в Baldur\'s Gate 3',
+      thumbnails: ['/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'],
+      duration_sec: 728, 
+      views_count: 845000, 
+      publishedAt: '2024-01-11T10:00:00Z',
+      author: {
+        id: 'u5',
+        displayName: 'RPGMaster',
+        handle: 'rpgmaster',
+        avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'
+      },
+      categories: [{ name: 'РПГ', slug: 'rpg' }]
+    },
+    { 
+      id: '6', 
+      slug: 'forza-horizon-5-cars',
+      title: 'Forza Horizon 5: Best Cars 2024', 
+      description: 'Обзор лучших автомобилей в Forza Horizon 5',
+      thumbnails: ['/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'],
+      duration_sec: 983, 
+      views_count: 634000, 
+      publishedAt: '2024-01-10T10:00:00Z',
+      author: {
+        id: 'u6',
+        displayName: 'SpeedDemon',
+        handle: 'speeddemon',
+        avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg'
+      },
+      categories: [{ name: 'Гонки', slug: 'racing' }]
+    }
   ];
 
-  const newVideos = [
-    { id: '5', title: 'Baldur\'s Gate 3: Character Creation', category: 'rpg', views: '845K', duration: '12:08', thumbnail: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg' },
-    { id: '6', title: 'Forza Horizon 5: Best Cars 2024', category: 'racing', views: '634K', duration: '16:23', thumbnail: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg' },
-    { id: '7', title: 'Tetris Effect: Zen Mode', category: 'puzzle', views: '423K', duration: '9:41', thumbnail: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg' },
-    { id: '8', title: 'Call of Duty: Warzone Tips', category: 'shooter', views: '1.1M', duration: '21:55', thumbnail: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg' }
+  const mockChannels = [
+    {
+      id: 'u1',
+      handle: 'gamerpro',
+      displayName: 'GamerPro',
+      bio: 'Профессиональный игрок с 10-летним опытом. Стримы каждый день!',
+      avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg',
+      banner: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg',
+      followers_count: 245000,
+      videos_count: 328,
+      isSubscribed: false
+    },
+    {
+      id: 'u2',
+      handle: 'buildmaster',
+      displayName: 'BuildMaster',
+      bio: 'Мастер строительства в Minecraft и других играх',
+      avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg',
+      followers_count: 189000,
+      videos_count: 156,
+      isSubscribed: true
+    },
+    {
+      id: 'u3',
+      handle: 'sportgamer',
+      displayName: 'SportGamer',
+      bio: 'Всё о спортивных играх: FIFA, NBA 2K, F1',
+      avatar: '/img/c1a04e2e-5efb-4932-a03d-df834442934a.jpg',
+      followers_count: 167000,
+      videos_count: 89,
+      isSubscribed: false
+    }
   ];
 
-  const toggleFavorite = (videoId: string) => {
-    setFavorites(prev => 
-      prev.includes(videoId) 
-        ? prev.filter(id => id !== videoId)
-        : [...prev, videoId]
-    );
+  const popularVideos = mockVideos.slice(0, 4);
+  const newVideos = mockVideos.slice(2, 6);
+  const topChannels = mockChannels;
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // TODO: Navigate to search page with query
   };
-
-  const VideoCard = ({ video }: { video: any }) => (
-    <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white/90 backdrop-blur-sm border-0">
-      <CardContent className="p-0">
-        <div className="relative">
-          <img 
-            src={video.thumbnail} 
-            alt={video.title}
-            className="w-full h-48 object-cover rounded-t-lg"
-          />
-          <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded text-xs font-medium">
-            {video.duration}
-          </div>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="absolute top-2 right-2 h-8 w-8 p-0 bg-white/90 hover:bg-white"
-            onClick={() => toggleFavorite(video.id)}
-          >
-            <Icon 
-              name={favorites.includes(video.id) ? "Heart" : "Heart"} 
-              size={16}
-              className={favorites.includes(video.id) ? "fill-game-red text-game-red" : "text-gray-600"}
-            />
-          </Button>
-        </div>
-        <div className="p-4">
-          <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-game-blue transition-colors">
-            {video.title}
-          </h3>
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <span className="flex items-center gap-1">
-              <Icon name="Eye" size={14} />
-              {video.views}
-            </span>
-            <span className="capitalize text-xs bg-gray-100 px-2 py-1 rounded-full">
-              {categories.find(c => c.id === video.category)?.name}
-            </span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-md border-b sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="text-2xl font-bold bg-gradient-to-r from-game-blue to-game-purple bg-clip-text text-transparent" style={{fontFamily: 'Montserrat'}}>
-                VideoHub 🚀
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Icon name="Search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                <Input
-                  placeholder="Поиск видео..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-64 border-gray-200 focus:border-game-blue"
-                />
-              </div>
-              <Button variant="ghost" size="sm">
-                <Icon name="User" size={16} />
-                Профиль
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header 
+        isAuthenticated={false}
+        onSearch={handleSearch}
+      />
 
-      {/* Mobile Navigation */}
-      <nav className="md:hidden bg-white border-t fixed bottom-0 left-0 right-0 z-50">
-        <div className="flex items-center justify-around py-2">
-          {[
-            { icon: 'Home', label: 'Главная', active: true },
-            { icon: 'Grid3X3', label: 'Категории' },
-            { icon: 'TrendingUp', label: 'Популярное' },
-            { icon: 'Heart', label: 'Избранное' },
-            { icon: 'User', label: 'Профиль' }
-          ].map((item, index) => (
-            <Button key={index} variant="ghost" size="sm" className="flex flex-col items-center p-2 h-auto">
-              <Icon name={item.icon as any} size={18} className={item.active ? 'text-game-blue' : 'text-gray-600'} />
-              <span className={`text-xs mt-1 ${item.active ? 'text-game-blue font-medium' : 'text-gray-600'}`}>
-                {item.label}
-              </span>
-            </Button>
-          ))}
-        </div>
-      </nav>
-
-      <main className="container mx-auto px-4 py-8 pb-20 md:pb-8">
+      <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <section className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4" style={{fontFamily: 'Montserrat'}}>
             Мир игровых видео
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto" style={{fontFamily: 'Open Sans'}}>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8" style={{fontFamily: 'Open Sans'}}>
             Открой для себя лучшие игровые моменты, обучающие гайды и эпичные прохождения
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/search">
+              <Button size="lg" className="bg-game-blue hover:bg-game-blue/90 text-white">
+                <Icon name="Search" size={16} className="mr-2" />
+                Найти видео
+              </Button>
+            </Link>
+            <Link to="/categories">
+              <Button size="lg" variant="outline">
+                <Icon name="Grid3X3" size={16} className="mr-2" />
+                Все категории
+              </Button>
+            </Link>
+          </div>
         </section>
 
         {/* Categories Grid */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900" style={{fontFamily: 'Montserrat'}}>
-              Категории
+              Популярные категории
             </h2>
-            <Button variant="outline" size="sm">
-              <Icon name="Grid3X3" size={16} className="mr-2" />
-              Все категории
-            </Button>
+            <Link to="/categories">
+              <Button variant="outline" size="sm">
+                <Icon name="Grid3X3" size={16} className="mr-2" />
+                Все категории
+              </Button>
+            </Link>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.map((category) => (
-              <Card 
-                key={category.id}
-                className={`${category.color} border-0 cursor-pointer hover:scale-105 transition-transform duration-200 text-white overflow-hidden group`}
-                onClick={() => setActiveCategory(category.id)}
-              >
-                <CardContent className="p-6 relative">
-                  <div className="flex flex-col items-start">
-                    <h3 className="font-semibold text-lg mb-2 text-white" style={{fontFamily: 'Montserrat'}}>
-                      {category.name}
-                    </h3>
-                    <div className="flex items-center text-white/90 text-sm">
-                      <Icon name="Play" size={14} className="mr-1" />
-                      {category.count} видео
+            {categories.slice(0, 8).map((category) => (
+              <Link key={category.id} to={`/category/${category.id}`}>
+                <Card 
+                  className={`${category.color} border-0 cursor-pointer hover:scale-105 transition-transform duration-200 text-white overflow-hidden group`}
+                >
+                  <CardContent className="p-6 relative">
+                    <div className="flex flex-col items-start">
+                      <h3 className="font-semibold text-lg mb-2 text-white" style={{fontFamily: 'Montserrat'}}>
+                        {category.name}
+                      </h3>
+                      <div className="flex items-center text-white/90 text-sm">
+                        <Icon name="Play" size={14} className="mr-1" />
+                        {category.count} видео
+                      </div>
                     </div>
-                  </div>
-                  <div className="absolute -right-4 -bottom-4 opacity-20 group-hover:opacity-30 transition-opacity">
-                    <Icon name="Gamepad2" size={48} />
-                  </div>
-                </CardContent>
-              </Card>
+                    <div className="absolute -right-4 -bottom-4 opacity-20 group-hover:opacity-30 transition-opacity">
+                      <Icon name="Gamepad2" size={48} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
 
-        {/* Popular Videos */}
+        {/* Popular Videos Carousel */}
         <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900" style={{fontFamily: 'Montserrat'}}>
-              🔥 Популярное
-            </h2>
-            <Button variant="outline" size="sm">
-              <Icon name="TrendingUp" size={16} className="mr-2" />
-              Смотреть всё
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Carousel
+            title="🔥 Популярные видео"
+            itemsPerView={4}
+            autoPlay={true}
+            showNavigation={true}
+          >
             {popularVideos.map((video) => (
-              <VideoCard key={video.id} video={video} />
+              <VideoCard key={video.id} video={video} showAuthor={true} />
             ))}
-          </div>
+          </Carousel>
         </section>
 
-        {/* New Videos */}
+        {/* New Videos Grid */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900" style={{fontFamily: 'Montserrat'}}>
-              ✨ Новинки
+              ✨ Новые видео
+            </h2>
+            <Link to="/new">
+              <Button variant="outline" size="sm">
+                <Icon name="Plus" size={16} className="mr-2" />
+                Все новинки
+              </Button>
+            </Link>
+          </div>
+          
+          <VideoGrid 
+            videos={newVideos}
+            columns={4}
+            showAuthor={true}
+          />
+        </section>
+
+        {/* Top Channels */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900" style={{fontFamily: 'Montserrat'}}>
+              🏆 Популярные каналы
             </h2>
             <Button variant="outline" size="sm">
-              <Icon name="Plus" size={16} className="mr-2" />
-              Все новинки
+              <Icon name="Users" size={16} className="mr-2" />
+              Все каналы
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {newVideos.map((video) => (
-              <VideoCard key={video.id} video={video} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {topChannels.map((channel) => (
+              <ChannelCard 
+                key={channel.id} 
+                channel={channel} 
+                variant="default"
+                showSubscribeButton={true}
+              />
             ))}
           </div>
         </section>
 
-        {/* Favorites Section */}
-        {favorites.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900" style={{fontFamily: 'Montserrat'}}>
-                ❤️ Избранное
-              </h2>
-              <span className="text-sm text-gray-600">{favorites.length} видео</span>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[...popularVideos, ...newVideos]
-                .filter(video => favorites.includes(video.id))
-                .map((video) => (
-                  <VideoCard key={video.id} video={video} />
-                ))}
-            </div>
-          </section>
-        )}
+        {/* Trending Section */}
+        <section className="mb-12">
+          <Link to="/trending">
+            <Card className="bg-gradient-to-r from-game-red to-game-coral text-white border-0 cursor-pointer hover:scale-105 transition-transform duration-200 overflow-hidden group">
+              <CardContent className="p-8 text-center relative">
+                <div className="relative z-10">
+                  <Icon name="TrendingUp" size={48} className="mx-auto mb-4" />
+                  <h2 className="text-3xl font-bold mb-2" style={{fontFamily: 'Montserrat'}}>
+                    🔥 В тренде сегодня
+                  </h2>
+                  <p className="text-white/90 mb-4">
+                    Самые горячие видео за последние 24 часа
+                  </p>
+                  <Button size="lg" className="bg-white text-game-red hover:bg-gray-100">
+                    <Icon name="PlayCircle" size={16} className="mr-2" />
+                    Смотреть тренды
+                  </Button>
+                </div>
+                <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Icon name="Flame" size={120} />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </section>
 
         {/* Stats Banner */}
-        <section className="bg-gradient-to-r from-game-blue to-game-purple rounded-2xl p-8 text-center text-white mb-8">
+        <section className="bg-gradient-to-r from-game-blue to-game-purple rounded-2xl p-8 text-center text-white">
           <h2 className="text-3xl font-bold mb-4" style={{fontFamily: 'Montserrat'}}>
             Присоединяйся к сообществу геймеров!
           </h2>
-          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto">
+          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto mb-6">
             <div>
               <div className="text-2xl font-bold">1M+</div>
               <div className="text-sm opacity-90">Пользователей</div>
@@ -263,12 +349,44 @@ export default function Index() {
               <div className="text-sm opacity-90">Игр</div>
             </div>
           </div>
-          <Button size="lg" className="mt-6 bg-white text-game-blue hover:bg-gray-100">
-            <Icon name="UserPlus" size={16} className="mr-2" />
-            Регистрация
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/auth/register">
+              <Button size="lg" className="bg-white text-game-blue hover:bg-gray-100">
+                <Icon name="UserPlus" size={16} className="mr-2" />
+                Регистрация
+              </Button>
+            </Link>
+            <Link to="/auth/login">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-game-blue">
+                <Icon name="LogIn" size={16} className="mr-2" />
+                Войти
+              </Button>
+            </Link>
+          </div>
         </section>
       </main>
+
+      {/* Mobile Navigation */}
+      <nav className="md:hidden bg-white border-t fixed bottom-0 left-0 right-0 z-50">
+        <div className="flex items-center justify-around py-2">
+          {[
+            { icon: 'Home', label: 'Главная', path: '/', active: true },
+            { icon: 'Grid3X3', label: 'Категории', path: '/categories' },
+            { icon: 'TrendingUp', label: 'Тренды', path: '/trending' },
+            { icon: 'Search', label: 'Поиск', path: '/search' },
+            { icon: 'User', label: 'Профиль', path: '/profile' }
+          ].map((item, index) => (
+            <Link key={index} to={item.path}>
+              <Button variant="ghost" size="sm" className="flex flex-col items-center p-2 h-auto">
+                <Icon name={item.icon as any} size={18} className={item.active ? 'text-game-blue' : 'text-gray-600'} />
+                <span className={`text-xs mt-1 ${item.active ? 'text-game-blue font-medium' : 'text-gray-600'}`}>
+                  {item.label}
+                </span>
+              </Button>
+            </Link>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }
